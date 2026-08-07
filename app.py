@@ -1,5 +1,6 @@
 import os
 import time
+import torch
 
 from flask import Flask
 from flask import render_template, Response, request, send_from_directory, flash, url_for
@@ -13,6 +14,7 @@ from src.video_analyzer import analyse_video, stream_video
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
+
 
 app = Flask(__name__)
 UPLOAD_FOLDER = './'
@@ -29,6 +31,11 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Keypoints/keypoint_rcnn_R_50
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 # load model weights
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
+
+cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+print(f"Using device: {cfg.MODEL.DEVICE}")
+
 # create the predictor for pose estimation using the config
 pose_detector = DefaultPredictor(cfg)
 model_load_done = time.time()
