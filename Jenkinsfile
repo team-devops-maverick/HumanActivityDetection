@@ -15,8 +15,11 @@ pipeline {
                 cat /etc/os-release
 
                 echo "Python:"
-                which python3.10 || true
-                python3.10 --version || true
+                curl -LsSf https://astral.sh/uv/install.sh | sh
+                source ~/.profile
+                uv python install 3.10
+                which python3.10 
+                python3.10 --version
 
                 echo "Current directory:"
                 pwd
