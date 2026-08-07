@@ -9,6 +9,7 @@ pipeline {
             steps {
                 sh '''
                 echo "Hostname:"
+                set -eux
                 hostname
 
                 echo "User:"
