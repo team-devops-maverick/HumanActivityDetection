@@ -1,8 +1,11 @@
 pipeline {
     agent any
 
+        environment {
+        PATH = "$HOME/.local/bin:$PATH"
+    }
     stages {
-        stage('Debug') {
+        stage('Setup Python') {
             steps {
                 sh '''
                 echo "Hostname:"
@@ -16,7 +19,6 @@ pipeline {
 
                 echo "Python:"
                 curl -LsSf https://astral.sh/uv/install.sh | sh
-                source ~/.profile
                 uv python install 3.10
                 which python3.10 
                 python3.10 --version
@@ -26,6 +28,9 @@ pipeline {
 
                 echo "PATH:"
                 echo $PATH
+                . .venv/bin/activate
+
+                uv sync
                 '''
             }
         }
