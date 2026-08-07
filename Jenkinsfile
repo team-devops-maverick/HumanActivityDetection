@@ -5,8 +5,7 @@ pipeline {
 
 stage('Checkout') {
     steps {
-        git branch: 'new',
-            url: 'https://github.com/team-devops-maverick/HumanActivityDetection.git'
+        git scm
     }
 }
 
