@@ -32,14 +32,10 @@ cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 # load model weights
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
 
-<<<<<<< Updated upstream
 cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 print(f"Using device: {cfg.MODEL.DEVICE}")
 
-=======
-cfg.MODEL.DEVICE = "cpu" 
->>>>>>> Stashed changes
 # create the predictor for pose estimation using the config
 pose_detector = DefaultPredictor(cfg)
 model_load_done = time.time()
