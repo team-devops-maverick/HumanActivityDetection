@@ -32,10 +32,14 @@ cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 # load model weights
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
 
+<<<<<<< Updated upstream
 cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 print(f"Using device: {cfg.MODEL.DEVICE}")
 
+=======
+cfg.MODEL.DEVICE = "cpu" 
+>>>>>>> Stashed changes
 # create the predictor for pose estimation using the config
 pose_detector = DefaultPredictor(cfg)
 model_load_done = time.time()
@@ -129,6 +133,9 @@ def analyze(filename):
     # invokes method analyse_video
     return Response(analyse_video(pose_detector, lstm_classifier, filename), mimetype='text/event-stream')
 
-
-if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True)
+app.run(
+    host="0.0.0.0",
+    port=5000,
+    debug=False,
+    use_reloader=False
+)

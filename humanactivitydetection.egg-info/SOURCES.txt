@@ -1,0 +1,12 @@
+pyproject.toml
+humanactivitydetection.egg-info/PKG-INFO
+humanactivitydetection.egg-info/SOURCES.txt
+humanactivitydetection.egg-info/dependency_links.txt
+humanactivitydetection.egg-info/requires.txt
+humanactivitydetection.egg-info/top_level.txt
+src/__init__.py
+src/azure_blob.py
+src/lstm.py
+src/train.py
+src/utils.py
+src/video_analyzer.py

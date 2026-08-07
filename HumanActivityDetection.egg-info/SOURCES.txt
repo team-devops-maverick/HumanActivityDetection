@@ -5,6 +5,7 @@ HumanActivityDetection.egg-info/dependency_links.txt
 HumanActivityDetection.egg-info/requires.txt
 HumanActivityDetection.egg-info/top_level.txt
 src/__init__.py
+src/azure_blob.py
 src/lstm.py
 src/train.py
 src/utils.py
