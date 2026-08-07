@@ -23,7 +23,7 @@ pipeline {
     steps {
         sh '''
         rm -rf test-env
-
+        pip install --upgrade pip
         python3.10 -m venv test-env
         . test-env/bin/activate
 
