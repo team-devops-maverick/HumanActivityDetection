@@ -14,7 +14,8 @@ stage('Checkout') {
         stage('Create Virtual Environment') {
             steps {
                 sh '''
-                    python3 -m venv .venv
+                rm -rf .venv
+            python3.10 -m venv .venv
                     . .venv/bin/activate
 
                     pip install --upgrade pip
