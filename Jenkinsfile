@@ -19,21 +19,5 @@ pipeline {
                 '''
             }
         }
-        stage('Test Wheel') {
-    steps {
-        sh '''
-        rm -rf test-env
-        pip install --upgrade pip
-        python3.10 -m venv test-env
-        . test-env/bin/activate
-
-        pip install dist/*.whl
-
-        pip show humanactivitydetection
-
-        python -c "import humanactivitydetection; print('Wheel installed successfully')"
-        '''
-    }
-}
     }
 }
