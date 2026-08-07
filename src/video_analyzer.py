@@ -9,13 +9,13 @@ import torch
 import torch.nn.functional as F
 
 LABELS = {
-    0: "JUMPING",
-    1: "JUMPING_JACKS",
-    2: "BOXING",
-    3: "WAVING_2HANDS",
-    4: "WAVING_1HAND",
-    5: "CLAPPING_HANDS"
-}
+    0: "Jumping",
+    1: "Jumping Jacks",
+    2: "Boxing",
+    3: "Waving (Both Hands)",
+    4: "Waving (One Hand)",
+    5: "Clapping Hands"
+        }
 
 # how many frames to skip while inferencing
 # configuring a higher value will result in better FPS (frames per rate), but accuracy might get impacted
