@@ -17,6 +17,17 @@ stage('Checkout') {
                 rm -rf .venv
             python --version
             python3.10 -m venv .venv
+                    whoami
+        pwd
+        echo "PATH=$PATH"
+
+        which python || true
+        which python3 || true
+        which python3.10 || true
+
+        python --version || true
+        python3 --version || true
+        python3.10 --version || true
                     . .venv/bin/activate
 
                     pip install --upgrade pip
