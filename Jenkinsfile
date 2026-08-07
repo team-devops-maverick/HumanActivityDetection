@@ -15,27 +15,16 @@ stage('Checkout') {
             steps {
                 sh '''
                 rm -rf .venv
-              sudo apt update
-sudo apt install -y software-properties-common
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt update
-sudo apt install -y python3.10 python3.10-venv
-            python3.10 -m venv .venv
-                    whoami
-        pwd
-        echo "PATH=$PATH"
-
-        which python || true
-        which python3 || true
-        which python3.10 || true
-
-        python --version || true
-        python3 --version || true
-        python3.10 --version || true
-                    . .venv/bin/activate
-
-                    pip install --upgrade pip
-                    pip install uv build
+                  sudo apt update
+                sudo apt install -y software-properties-common
+                sudo add-apt-repository ppa:deadsnakes/ppa
+                sudo apt update
+                sudo apt install -y python3.10 python3.10-venv
+                python3.10 -m venv .venv
+                . .venv/bin/activate
+                python -m pip install --upgrade pip
+                pip install uv
+                uv sync --frozen
                 '''
             }
         }
