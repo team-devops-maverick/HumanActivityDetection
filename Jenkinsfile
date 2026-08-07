@@ -15,6 +15,7 @@ stage('Checkout') {
             steps {
                 sh '''
                 rm -rf .venv
+                sudo apt install python3.10 python3.10-venv
             python3.10 -m venv .venv
                     . .venv/bin/activate
 
