@@ -15,6 +15,7 @@ stage('Checkout') {
             steps {
                 sh '''
                 rm -rf .venv
+                sudo apt install python3.11 python3.11-venv
             python3.10 -m venv .venv
                     whoami
         pwd
