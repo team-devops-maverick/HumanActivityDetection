@@ -15,7 +15,6 @@ stage('Checkout') {
             steps {
                 sh '''
                 rm -rf .venv
-            python --version
             python3.10 -m venv .venv
                     whoami
         pwd
