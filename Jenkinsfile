@@ -6,6 +6,7 @@ pipeline {
 stage('Checkout') {
     steps {
         git branch: 'new',
+            credentialsId: 'githubToken',
             url: 'https://github.com/team-devops-maverick/HumanActivityDetection.git'
     }
 }
