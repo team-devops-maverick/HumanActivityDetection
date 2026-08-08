@@ -17,7 +17,8 @@ pipeline {
                 which python3.10 
                 python3.10 --version
                 rm -rf .venv
-                uv venv --python 3.10                
+                uv venv --python 3.10
+                rm -rf dist build *.egg-info
                 uv build
                 '''
             }
