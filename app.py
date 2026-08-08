@@ -90,15 +90,15 @@ def upload():
             video_file.save(filepath)
             obj.video = filename
             obj.is_video_display = True
-            return render_template('/index.html', obj=obj)
+            return render_template('index.html', obj=obj)
         else:
             if video_file.filename:
                 msg = f"{video_file.filename} is not a video file"
             else:
                 msg = "Please select a video file"
             flash(msg)
-        return render_template('/index.html', obj=obj)
-    return render_template('/index.html', obj=obj)
+        return render_template('index.html', obj=obj)
+    return render_template('index.html', obj=obj)
 
 
 @app.route('/sample', methods=['POST'])
