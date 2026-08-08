@@ -15,40 +15,51 @@ pipeline {
             steps {
                 bat '''
                     @echo on
+@echo on
 
-                    echo Installing uv...
+            echo ==============================
+            echo Installing uv
+            echo ==============================
 
-                    powershell -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"
+            powershell -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"
 
-                    set "PATH=%USERPROFILE%\\.local\\bin;%PATH%"
+            set "PATH=%USERPROFILE%\\.local\\bin;%PATH%"
 
-                    uv --version
+            uv --version
 
-                    echo Installing Python 3.10...
+            echo ==============================
+            echo Installing Python 3.10
+            echo ==============================
 
-                    uv python install 3.10
+            uv python install 3.10
 
-                    uv python find 3.10
+            echo Python location:
+            uv python find 3.10
 
-                    echo Python version:
+            echo Python version:
+            uv run --python 3.10 python --version
 
-                    uv run --python 3.10 python --version
+            echo ==============================
+            echo Cleaning old build files
+            echo ==============================
 
-                    echo Cleaning old build files...
+            if exist .venv rmdir /s /q .venv
+            if exist dist rmdir /s /q dist
+            if exist build rmdir /s /q build
 
-                    if exist .venv rmdir /s /q .venv
-                    if exist dist rmdir /s /q dist
-                    if exist build rmdir /s /q build
+            for /d %%D in (*.egg-info) do rmdir /s /q "%%D"
 
-                    for /d %%D in (*.egg-info) do rmdir /s /q "%%D"
+            echo ==============================
+            echo Building WHL
+            echo ==============================
 
-                    echo Building WHL...
+            uv build
 
-                    uv build
+            echo ==============================
+            echo Build completed
+            echo ==============================
 
-                    echo Build completed.
-
-                    dir dist
+            dir dist
                 '''
             }
         }
