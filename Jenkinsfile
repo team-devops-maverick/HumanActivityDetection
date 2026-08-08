@@ -34,6 +34,8 @@ pipeline {
             steps {
                 sh '''
                     docker rm -f ${CONTAINER_NAME} || true
+                    echo "Removing previous stopped container..."
+                    docker rm -f had-app 2>/dev/null || true
                 '''
             }
         }
