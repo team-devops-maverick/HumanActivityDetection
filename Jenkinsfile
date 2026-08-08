@@ -12,66 +12,70 @@ pipeline {
     stages {
 
         stage('Build Python WHL') {
-        steps {
-            bat '''
-                @echo on
+    steps {
+        bat '''
+            @echo on
 
+            echo ==============================
+            echo Jenkins user
+            echo ==============================
+            whoami
+
+            echo ==============================
+            echo Installing uv
+            echo ==============================
+
+            powershell -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"
+
+            set "PATH=%USERPROFILE%\\.local\\bin;%PATH%"
+
+            where uv
+            uv --version
+
+            echo ==============================
+            echo Installing Python 3.10
+            echo ==============================
+
+            uv python install 3.10
+
+            uv python find 3.10
+
+            uv run --python 3.10 python --version
+
+            echo ==============================
+            echo Cleaning old build files
+            echo ==============================
+
+            if exist .venv rmdir /s /q .venv
+            if exist dist rmdir /s /q dist
+            if exist build rmdir /s /q build
+
+            for /d %%D in (*.egg-info) do rmdir /s /q "%%D"
+
+            echo ==============================
+            echo Building WHL
+            echo ==============================
+
+            uv build
+
+            set "BUILD_RESULT=%ERRORLEVEL%"
+
+            if not "%BUILD_RESULT%"=="0" (
                 echo ==============================
-                echo Installing uv
+                echo UV BUILD FAILED
+                echo ERROR CODE: %BUILD_RESULT%
                 echo ==============================
+                exit /b %BUILD_RESULT%
+            )
 
-                powershell -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"
+            echo ==============================
+            echo Build completed
+            echo ==============================
 
-                set "PATH=%USERPROFILE%\\.local\\bin;%PATH%"
-
-                echo Checking uv...
-                where uv
-                uv --version
-
-                echo ==============================
-                echo Installing Python 3.10
-                echo ==============================
-
-                uv python install 3.10
-
-                echo Python location:
-                uv python find 3.10
-
-                echo Python version:
-                uv run --python 3.10 python --version
-
-                echo ==============================
-                echo Cleaning old build files
-                echo ==============================
-
-                if exist .venv rmdir /s /q .venv
-                if exist dist rmdir /s /q dist
-                if exist build rmdir /s /q build
-
-                for /d %%D in (*.egg-info) do rmdir /s /q "%%D"
-
-                echo ==============================
-                echo Building WHL
-                echo ==============================
-
-                uv build
-
-                if %ERRORLEVEL% NEQ 0 (
-                    echo ==============================
-                    echo UV BUILD FAILED
-                    echo ERROR CODE: %ERRORLEVEL%
-                    echo ==============================
-                    exit /b %ERRORLEVEL%
-                )
-
-                echo ==============================
-                echo Build completed
-                echo ==============================
-
-                dir dist
-            '''
-        }
+            dir dist
+        '''
     }
+}
 
         stage('Build Docker Image') {
             steps {
