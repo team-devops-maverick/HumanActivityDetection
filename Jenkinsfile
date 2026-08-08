@@ -1,65 +1,127 @@
 pipeline {
+
     agent any
+
     environment {
-        PATH = "$HOME/.local/bin:$PATH"
         IMAGE_NAME = "had"
-        IMAGE_TAG  = "1.0.${BUILD_NUMBER}"
+        IMAGE_TAG = "1.0.${BUILD_NUMBER}"
         CONTAINER_NAME = "had-app"
         VOLUME_NAME = "had-venv"
     }
+
     stages {
-        stage('Build Python .Whl file') {
+
+        stage('Build Python WHL') {
             steps {
-                sh '''
-                set -eux
-                curl -LsSf https://astral.sh/uv/install.sh | sh
-                uv python install 3.10
-                which python3.10 
-                python3.10 --version
-                rm -rf .venv
-                uv venv --python 3.10
-                rm -rf dist build *.egg-info
-                uv build
+                bat '''
+                    @echo on
+
+                    echo Installing uv...
+
+                    powershell -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"
+
+                    set "PATH=%USERPROFILE%\\.local\\bin;%PATH%"
+
+                    uv --version
+
+                    echo Installing Python 3.10...
+
+                    uv python install 3.10
+
+                    uv python find 3.10
+
+                    echo Python version:
+
+                    uv run --python 3.10 python --version
+
+                    echo Cleaning old build files...
+
+                    if exist .venv rmdir /s /q .venv
+                    if exist dist rmdir /s /q dist
+                    if exist build rmdir /s /q build
+
+                    for /d %%D in (*.egg-info) do rmdir /s /q "%%D"
+
+                    echo Building WHL...
+
+                    uv build
+
+                    echo Build completed.
+
+                    dir dist
                 '''
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                sh '''
-                    docker build \
-                        -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                bat '''
+                    @echo on
+
+                    docker build -t %IMAGE_NAME%:%IMAGE_TAG% .
                 '''
             }
         }
+
         stage('Stop Old Container') {
             steps {
-                sh '''
-                    docker rm -f ${CONTAINER_NAME} || true
-                    echo "Removing previous stopped container..."
-                    docker rm -f had-app 2>/dev/null || true
+                bat '''
+                    @echo on
+
+                    echo Stopping old container...
+
+                    docker rm -f %CONTAINER_NAME% 2>nul || echo No existing container found.
                 '''
             }
         }
+
         stage('Create Docker Volume') {
-    steps {
-        sh '''
-            if docker volume inspect had-venv >/dev/null 2>&1; then
-                echo "Docker volume 'had-venv' already exists"
-            else
-                echo "Creating Docker volume 'had-venv'"
-                docker volume create had-venv
-            fi
-        '''
-    }
-}
-                stage('Run Updated Container') {
             steps {
-                sh '''
-                    docker run -d \
-                        --name ${CONTAINER_NAME} \
-                        -p 5000:5000 \
-                        -v ${VOLUME_NAME}:/app/.venv \
-                        ${IMAGE_NAME}:${IMAGE_TAG}
+                bat '''
+                    @echo on
+
+                    echo Checking Docker volume...
+
+                    docker volume inspect %VOLUME_NAME% >nul 2>&1
+
+                    if %ERRORLEVEL% EQU 0 (
+                        echo Docker volume "%VOLUME_NAME%" already exists.
+                    ) else (
+                        echo Creating Docker volume "%VOLUME_NAME%".
+                        docker volume create %VOLUME_NAME%
+                    )
+                '''
+            }
+        }
+
+        stage('Run Updated Container') {
+            steps {
+                bat '''
+                    @echo on
+
+                    echo Starting updated container...
+
+                    docker run -d ^
+                        --name %CONTAINER_NAME% ^
+                        -p 5000:5000 ^
+                        -v %VOLUME_NAME%:/app/.venv ^
+                        %IMAGE_NAME%:%IMAGE_TAG%
+                '''
+            }
+        }
+
+        stage('Verify Container') {
+            steps {
+                bat '''
+                    @echo on
+
+                    timeout /t 10 /nobreak
+
+                    docker ps -a --filter "name=%CONTAINER_NAME%"
+
+                    echo.
+                    echo Container logs:
+                    docker logs %CONTAINER_NAME%
                 '''
             }
         }
