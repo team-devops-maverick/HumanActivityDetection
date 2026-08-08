@@ -1,27 +1,50 @@
 #!/bin/bash
 set -e
 
-if [ ! -d ".venv" ]; then
-    echo "First run: installing dependencies..."
+VENV="/app/.venv"
 
-    python -m venv .venv
-    source .venv/bin/activate
+if [ ! -d "$VENV" ]; then
+
+    echo "======================================"
+    echo "First run: installing dependencies..."
+    echo "======================================"
+
+    python -m venv "$VENV"
+    source "$VENV/bin/activate"
 
     pip install --upgrade pip
     pip install uv
+
+    echo "Installing CPU PyTorch..."
 
     pip install \
         --index-url https://download.pytorch.org/whl/cpu \
         torch==1.13.1+cpu \
         torchvision==0.14.1+cpu
 
+    echo "Installing Detectron2..."
+
     pip install \
         --no-build-isolation \
         git+https://github.com/facebookresearch/detectron2.git
 
-    pip install *.whl
+    echo "Installing application wheel..."
+
+    pip install /app/*.whl
+
 else
-    source .venv/bin/activate
+
+    echo "======================================"
+    echo "Existing environment found"
+    echo "Skipping dependency installation"
+    echo "======================================"
+
+    source "$VENV/bin/activate"
+
 fi
 
-python app.py
+echo "======================================"
+echo "Starting Human Activity Detection"
+echo "======================================"
+
+python -m app
