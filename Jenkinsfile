@@ -48,10 +48,10 @@ pipeline {
 
                 docker tag \
                     ${IMAGE_NAME}:${IMAGE_TAG} \
-                    ghcr.io/vinaykumarshetkar/had:${IMAGE_TAG}
+                    ghcr.io/team-devops-maverick/had:${IMAGE_TAG}
 
                 docker push \
-                    ghcr.io/vinaykumarshetkar/had:${IMAGE_TAG}
+                    ghcr.io/team-devops-maverick/had:${IMAGE_TAG}
             '''
         }
     }
