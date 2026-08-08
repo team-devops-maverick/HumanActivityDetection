@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY dist/*.whl .
 COPY models ./models
+COPY templates ./templates
 COPY run.sh .
 
 RUN chmod +x run.sh
