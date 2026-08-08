@@ -4,7 +4,9 @@ set -e
 VENV="/app/.venv"
 WHEEL=$(ls /app/*.whl)
 
+echo "======================================"
 echo "Using wheel: $WHEEL"
+echo "======================================"
 
 if [ ! -f "$VENV/bin/activate" ]; then
 
@@ -42,28 +44,35 @@ else
     if pip show humanactivitydetection > /dev/null 2>&1; then
 
         INSTALLED_VERSION=$(pip show humanactivitydetection |
-            grep '^Version:' | awk '{print $2}')
+            grep '^Version:' |
+            awk '{print $2}')
 
         CURRENT_VERSION=$(basename "$WHEEL" |
             sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
 
         echo "Installed version: $INSTALLED_VERSION"
-        echo "Current wheel:     $CURRENT_VERSION"
+        echo "Current wheel version: $CURRENT_VERSION"
 
         if [ "$INSTALLED_VERSION" != "$CURRENT_VERSION" ]; then
 
+            echo "======================================"
             echo "New application version detected"
+            echo "Updating application wheel..."
+            echo "======================================"
 
             pip install --force-reinstall "$WHEEL"
 
         else
 
             echo "Same application version"
-            echo "Skipping wheel installation"
+            echo "Skipping application installation"
 
         fi
 
     else
+
+        echo "Application not installed"
+        echo "Installing application wheel..."
 
         pip install "$WHEEL"
 
@@ -71,6 +80,8 @@ else
 
 fi
 
+echo "======================================"
 echo "Starting application"
+echo "======================================"
 
 python -m app
