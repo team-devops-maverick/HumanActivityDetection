@@ -70,7 +70,7 @@ def cleanString(v: str):
 def index():
     obj = DataObject
     obj.video = "sample_video.mp4"
-    return render_template('/index.html', obj=obj)
+    return render_template('index.html', obj=obj)
 
 
 @app.route('/upload', methods=['POST'])
