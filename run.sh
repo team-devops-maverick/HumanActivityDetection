@@ -6,10 +6,10 @@ WHEEL=$(ls /app/*.whl)
 
 echo "Using wheel: $WHEEL"
 
-if [ ! -d "$VENV" ]; then
+if [ ! -f "$VENV/bin/activate" ]; then
 
     echo "======================================"
-    echo "Creating virtual environment"
+    echo "First run: creating virtual environment"
     echo "======================================"
 
     python -m venv "$VENV"
@@ -31,19 +31,29 @@ if [ ! -d "$VENV" ]; then
         --no-build-isolation \
         git+https://github.com/facebookresearch/detectron2.git
 
-    echo "Installing application..."
+    echo "Installing application wheel..."
 
     pip install "$WHEEL"
 
 else
 
+    echo "======================================"
+    echo "Existing virtual environment found"
+    echo "======================================"
+
     source "$VENV/bin/activate"
 
-    echo "======================================"
-    echo "Existing environment found"
-    echo "======================================"
+    echo "Python:"
+    python --version
 
-    # Check whether current wheel is already installed
+    echo "Installed application:"
+    pip show humanactivitydetection || true
+
+    echo "Current wheel:"
+    basename "$WHEEL"
+
+    echo "Checking application version..."
+
     if pip show humanactivitydetection > /dev/null 2>&1; then
 
         INSTALLED_VERSION=$(pip show humanactivitydetection | grep '^Version:' | awk '{print $2}')
@@ -51,19 +61,19 @@ else
         CURRENT_VERSION=$(basename "$WHEEL" | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
 
         echo "Installed version: $INSTALLED_VERSION"
-        echo "Current wheel version: $CURRENT_VERSION"
+        echo "Wheel version:     $CURRENT_VERSION"
 
         if [ "$INSTALLED_VERSION" != "$CURRENT_VERSION" ]; then
 
-            echo "New wheel detected!"
-            echo "Updating application..."
+            echo "New application version detected."
+            echo "Installing new wheel..."
 
-            pip install --upgrade --force-reinstall "$WHEEL"
+            pip install --force-reinstall "$WHEEL"
 
         else
 
-            echo "Same wheel version detected."
-            echo "Skipping application installation."
+            echo "Same application version."
+            echo "Skipping installation."
 
         fi
 
