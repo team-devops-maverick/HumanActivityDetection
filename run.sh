@@ -8,9 +8,7 @@ echo "Using wheel: $WHEEL"
 
 if [ ! -f "$VENV/bin/activate" ]; then
 
-    echo "======================================"
     echo "First run: creating virtual environment"
-    echo "======================================"
 
     python -m venv "$VENV"
 
@@ -37,50 +35,35 @@ if [ ! -f "$VENV/bin/activate" ]; then
 
 else
 
-    echo "======================================"
-    echo "Existing virtual environment found"
-    echo "======================================"
-
     source "$VENV/bin/activate"
 
-    echo "Python:"
-    python --version
-
-    echo "Installed application:"
-    pip show humanactivitydetection || true
-
-    echo "Current wheel:"
-    basename "$WHEEL"
-
-    echo "Checking application version..."
+    echo "Existing virtual environment found"
 
     if pip show humanactivitydetection > /dev/null 2>&1; then
 
-        INSTALLED_VERSION=$(pip show humanactivitydetection | grep '^Version:' | awk '{print $2}')
+        INSTALLED_VERSION=$(pip show humanactivitydetection |
+            grep '^Version:' | awk '{print $2}')
 
-        CURRENT_VERSION=$(basename "$WHEEL" | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
+        CURRENT_VERSION=$(basename "$WHEEL" |
+            sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
 
         echo "Installed version: $INSTALLED_VERSION"
-        echo "Wheel version:     $CURRENT_VERSION"
+        echo "Current wheel:     $CURRENT_VERSION"
 
         if [ "$INSTALLED_VERSION" != "$CURRENT_VERSION" ]; then
 
-            echo "New application version detected."
-            echo "Installing new wheel..."
+            echo "New application version detected"
 
             pip install --force-reinstall "$WHEEL"
 
         else
 
-            echo "Same application version."
-            echo "Skipping installation."
+            echo "Same application version"
+            echo "Skipping wheel installation"
 
         fi
 
     else
-
-        echo "Application not installed."
-        echo "Installing wheel..."
 
         pip install "$WHEEL"
 
@@ -88,8 +71,6 @@ else
 
 fi
 
-echo "======================================"
 echo "Starting application"
-echo "======================================"
 
 python -m app
