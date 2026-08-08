@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
 COPY dist/*.whl .
 COPY models ./models
 COPY templates ./templates
+COPY sample_video.mp4 /app/sample_video.mp4
 COPY run.sh .
 
 RUN chmod +x run.sh
