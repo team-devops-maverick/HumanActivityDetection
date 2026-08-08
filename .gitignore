@@ -29,3 +29,11 @@ dist/
 
 # Jupyter
 .ipynb_checkpoints/
+
+.venv
+.git
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.log

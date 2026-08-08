@@ -20,8 +20,6 @@ dependencies = [
 
     "numpy==1.26.4",
     "opencv-python==4.10.0.84",
-
-    "torch==1.13.1",
     "torchvision==0.14.1",
     "torchmetrics==0.11.4",
     "pytorch-lightning==1.9.5",
@@ -32,11 +30,18 @@ dependencies = [
     "azure-storage-blob==12.30.0",
     "azure-identity==1.25.3",
 
-    "detectron2 @ git+https://github.com/facebookresearch/detectron2.git",
+    "fvcore",
+    "iopath",
+    "pycocotools",
+    "yacs",
+    "hydra-core",
+    "matplotlib",
+
     "setuptools==69.5.1"
 ]
 
 [tool.setuptools]
+py-modules = ["app"]
 packages = ["src"]
 
 [tool.setuptools.package-data]

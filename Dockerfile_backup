@@ -1,0 +1,38 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    git \
+    libgl1 \
+    libglib2.0-0 \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY . .
+
+RUN python -m venv .venv
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+RUN pip install --no-cache-dir uv
+
+# Install CPU-only PyTorch
+RUN uv pip install \
+    --python .venv/bin/python \
+    --index-url https://download.pytorch.org/whl/cpu \
+    torch==1.13.1+cpu \
+    torchvision==0.14.1+cpu
+
+# Install remaining dependencies
+RUN uv sync --frozen --no-install-project
+
+# Install Detectron2
+RUN uv pip install \
+    --python .venv/bin/python \
+    --no-build-isolation \
+    "git+https://github.com/facebookresearch/detectron2.git"
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]

@@ -129,9 +129,10 @@ def analyze(filename):
     # invokes method analyse_video
     return Response(analyse_video(pose_detector, lstm_classifier, filename), mimetype='text/event-stream')
 
-app.run(
-    host="0.0.0.0",
-    port=5000,
-    debug=False,
-    use_reloader=False
-)
+if __name__ == "__main__":
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=False,
+        use_reloader=False
+    )
