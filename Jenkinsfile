@@ -31,6 +31,31 @@ pipeline {
                 '''
             }
         }
+        stage('Push Docker Image to GHCR') {
+    steps {
+        withCredentials([
+            string(
+                credentialsId: 'github-token',
+                variable: 'GITHUB_TOKEN'
+            )
+        ]) {
+            sh '''
+                set -e
+
+                echo "$GITHUB_TOKEN" | docker login ghcr.io \
+                    -u vinaykumarshetkar \
+                    --password-stdin
+
+                docker tag \
+                    ${IMAGE_NAME}:${IMAGE_TAG} \
+                    ghcr.io/vinaykumarshetkar/had:${IMAGE_TAG}
+
+                docker push \
+                    ghcr.io/vinaykumarshetkar/had:${IMAGE_TAG}
+            '''
+        }
+    }
+}
         stage('Stop Old Container') {
             steps {
                 sh '''
