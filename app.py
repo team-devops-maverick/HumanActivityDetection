@@ -16,7 +16,10 @@ from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="/app/templates"
+)
 UPLOAD_FOLDER = './'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = "secret key"
@@ -103,7 +106,7 @@ def sample():
     obj = DataObject
     obj.is_video_display = True
     obj.video = "sample_video.mp4"
-    return render_template('/index.html', obj=obj)
+    return render_template('index.html', obj=obj)
 
 
 @app.route('/files/<filename>')
