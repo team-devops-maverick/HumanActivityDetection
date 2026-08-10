@@ -27,7 +27,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQubeHAD') {
                     sh '''
-                    sonar-scanner \
+                    /opt/sonar-scanner/bin/sonar-scanner \
                 -Dsonar.projectKey=HAD \
                   -Dsonar.projectName=HAD \
                   -Dsonar.sources=src,app.py \
