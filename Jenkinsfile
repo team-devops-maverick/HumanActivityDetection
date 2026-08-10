@@ -27,9 +27,12 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQubeHAD') {
                     sh '''
-                        mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                          -Dsonar.projectKey=HAD \
-                          -Dsonar.projectName='HAD'
+                    sonar-scanner \
+                -Dsonar.projectKey=HAD \
+                  -Dsonar.projectName=HAD \
+                  -Dsonar.sources=src,app.py \
+                  -Dsonar.exclusions="**/*.ipynb,**/*.mp4,**/*.lock,models/**,images/**,dist/**,*.egg-info/**"
+
                     '''
                 }
             }
