@@ -3,7 +3,6 @@ pipeline {
     environment {
         PATH = "$HOME/.local/bin:$PATH"
         IMAGE_NAME = "had"
-        IMAGE_TAG  = "1.0.${BUILD_NUMBER}"
         CONTAINER_NAME = "had-app"
         VOLUME_NAME = "had-venv"
     }
@@ -11,17 +10,30 @@ pipeline {
         stage('Build Python .Whl file') {
             steps {
                 sh '''
-                set -eux
-                curl -LsSf https://astral.sh/uv/install.sh | sh
-                uv python install 3.10
-                which python3.10 
-                python3.10 --version
-                rm -rf .venv
-                uv venv --python 3.10
-                rm -rf dist build *.egg-info
-                uv build
+                    set -eux
+                    curl -LsSf https://astral.sh/uv/install.sh | sh
+                    uv python install 3.10
+                    which python3.10 
+                    python3.10 --version
+                    rm -rf .venv
+                    uv venv --python 3.10
+                    rm -rf dist build *.egg-info
+                    uv build
                 '''
+                script {
+                    env.IMAGE_TAG = sh(
+                        script: '''
+                            sed -n 's/^version = "\\([^"]*\\)"/\\1/p' pyproject.toml
+                        ''',
+                        returnStdout: true
+                    ).trim()
+                    if (!env.IMAGE_TAG) {
+                        error "Version not found in pyproject.toml"
+                    }
+
+            echo "Application version: ${env.IMAGE_TAG}"
             }
+        }
         }
         stage('SonarQube Analysis') {
             steps {
