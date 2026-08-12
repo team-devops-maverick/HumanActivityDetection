@@ -65,12 +65,12 @@ pipeline {
             sh '''
                 set -e
 
-                echo "$ACR_PASSWORD" | docker login myacr.azurecr.io \
+                echo "$ACR_PASSWORD" | docker login teammaverick.azurecr.io \
                     -u "$ACR_USERNAME" \
                     --password-stdin
-                docker tag ${IMAGE_NAME}:${IMAGE_TAG} myacr.azurecr.io/had:${IMAGE_TAG}
+                docker tag ${IMAGE_NAME}:${IMAGE_TAG} teammaverick.azurecr.io/had:${IMAGE_TAG}
 
-                docker push myacr.azurecr.io/had:${IMAGE_TAG}
+                docker push teammaverick.azurecr.io/had:${IMAGE_TAG}
             '''
         }
     }
