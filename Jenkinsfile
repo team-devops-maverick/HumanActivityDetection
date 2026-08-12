@@ -58,15 +58,16 @@ pipeline {
         withCredentials([
                     usernamePassword(
                         credentialsId: 'acr-service-principal',
-                        usernameVariable: 'AZURE_CLIENT_ID',
-                        passwordVariable: 'AZURE_CLIENT_SECRET'
-                    )
+                        usernameVariable: 'ACR_USERNAME',
+                        passwordVariable: 'ACR_PASSWORD'
+            )
         ]) {
             sh '''
                 set -e
-                docker login myacr.azurecr.io \
-                          -u "$AZURE_CLIENT_ID" \
-                          -p "$AZURE_CLIENT_SECRET"
+
+                echo "$ACR_PASSWORD" | docker login myacr.azurecr.io \
+                    -u "$ACR_USERNAME" \
+                    --password-stdin
                 docker tag ${IMAGE_NAME}:${IMAGE_TAG} myacr.azurecr.io/had:${IMAGE_TAG}
 
                 docker push myacr.azurecr.io/had:${IMAGE_TAG}
