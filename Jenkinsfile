@@ -28,8 +28,8 @@ pipeline {
                 withSonarQubeEnv('SonarQubeHAD') {
                     sh '''
                     /opt/sonar-scanner/bin/sonar-scanner \
-                -Dsonar.projectKey=HAD \
-                  -Dsonar.projectName=HAD \
+                -Dsonar.projectKey=had \
+                  -Dsonar.projectName=had \
                   -Dsonar.sources=src,app.py \
                   -Dsonar.exclusions="**/*.ipynb,**/*.mp4,**/*.lock,models/**,images/**,dist/**,*.egg-info/**"
 
