@@ -53,27 +53,23 @@ pipeline {
                 '''
             }
         }
-        stage('Push Docker Image to GHCR') {
+        stage('Push Docker Image to ACR') {
     steps {
         withCredentials([
-            string(
-                credentialsId: 'github-token',
-                variable: 'GITHUB_TOKEN'
-            )
+                    usernamePassword(
+                        credentialsId: 'acr-service-principal',
+                        usernameVariable: 'AZURE_CLIENT_ID',
+                        passwordVariable: 'AZURE_CLIENT_SECRET'
+                    )
         ]) {
             sh '''
                 set -e
+                docker login myacr.azurecr.io \
+                          -u "$AZURE_CLIENT_ID" \
+                          -p "$AZURE_CLIENT_SECRET"
+                docker tag ${IMAGE_NAME}:${IMAGE_TAG} myacr.azurecr.io/had:${IMAGE_TAG}
 
-                echo "$GITHUB_TOKEN" | docker login ghcr.io \
-                    -u vinaykumarshetkar \
-                    --password-stdin
-
-                docker tag \
-                    ${IMAGE_NAME}:${IMAGE_TAG} \
-                    ghcr.io/team-devops-maverick/had:${IMAGE_TAG}
-
-                docker push \
-                    ghcr.io/team-devops-maverick/had:${IMAGE_TAG}
+                docker push myacr.azurecr.io/had:${IMAGE_TAG}
             '''
         }
     }
